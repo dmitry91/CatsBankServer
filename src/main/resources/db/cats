@@ -1,0 +1,8 @@
+CREATE DATABASE `catsbank`;
+CREATE TABLE
+  `cats` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `text` TEXT NOT NULL,
+  `photo` MEDIUMBLOB NULL,
+  PRIMARY KEY(`id`)
+)
