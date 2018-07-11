@@ -79,8 +79,8 @@ public class CatsController {
         return new ResponseEntity<String>(String.valueOf(cat.toJson()), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "delCatById", method = RequestMethod.GET)
-    public String deleteCat(@RequestParam int id){
+    @RequestMapping(value = "delCatById/{id}", method = RequestMethod.DELETE)
+    public String deleteCat(@PathVariable("id") int id){
         catsRepository.deleteById(id);
         return "del";
     }
