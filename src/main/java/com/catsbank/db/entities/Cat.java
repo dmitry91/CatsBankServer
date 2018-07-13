@@ -4,10 +4,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Arrays;
+@Entity
+@Table(name = "cats")
+public class Cat implements Serializable {
 
-public class Cat {
-
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
     private String text;
     private byte[] photo;

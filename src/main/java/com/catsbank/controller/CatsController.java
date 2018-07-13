@@ -26,21 +26,25 @@ public class CatsController {
      * add new Cat to base
      * @param text text about Cat
      * @param photo image Cat
-     * @return '1' if success else return '0'
+     * @return Object if success else return null
      */
     @RequestMapping(value = "addCat", method = RequestMethod.POST)
     @ResponseBody
-    public int addCat(@RequestParam String text, @RequestParam(value = "photo", required = false) MultipartFile photo) {
+    public Cat addCat(@RequestParam String text, @RequestParam(value = "photo", required = false) MultipartFile photo) {
+        Cat cat = new Cat();
         try {
             if (photo != null) {
-                return catsRepository.addCat(text, photo.getBytes());
+                cat.setText(text);
+                cat.setPhoto(photo.getBytes());
+                return catsRepository.save( cat);
             } else {
-                return catsRepository.addCat(text, null);
+                cat.setText(text);
+                return catsRepository.save(cat);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return 0;
+        return null;
     }
 
     /**
@@ -48,40 +52,42 @@ public class CatsController {
      * @param id id for update
      * @param text new text
      * @param photo new image
-     * @return '1' if success else return '0'
+     * @return Object if success else return null
      */
     @RequestMapping(value = "updCat", method = RequestMethod.POST)
     @ResponseBody
-    public int updCat(@RequestParam int id, @RequestParam String text, @RequestParam(value = "photo", required = false) MultipartFile photo){
+    public Cat updCat(@RequestParam int id, @RequestParam String text, @RequestParam(value = "photo", required = false) MultipartFile photo) {
+        Cat cat = catsRepository.findById(id).get();
         try {
-            if (photo != null) {
-                return catsRepository.updCat(id, text, photo.getBytes());
-            } else {
-                return catsRepository.updCat(id, text);
+            if (text != null) {
+                cat.setText(text);
             }
+            if (photo != null) {
+                cat.setPhoto(photo.getBytes());
+            }
+            return catsRepository.save(cat);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return 0;
+        return null;
     }
 
     @RequestMapping(value = "getAllCats", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> listAllCats() {
-        List<Cat> list = catsRepository.findAll();
+        List<Cat> list = (List<Cat>) catsRepository.findAll();
         return new ResponseEntity<String>(String.valueOf(list.stream().map(Cat::toJson).collect(Collectors.toList())), HttpStatus.OK);
     }
 
     @RequestMapping(value = "getCatById", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> getCatById(@RequestParam int id) {
-        Cat cat = catsRepository.findById(id);
+        Cat cat = catsRepository.findById(id).get();
         return new ResponseEntity<String>(String.valueOf(cat.toJson()), HttpStatus.OK);
     }
 
     @RequestMapping(value = "delCatById/{id}", method = RequestMethod.DELETE)
-    public String deleteCat(@PathVariable("id") int id){
+    public void deleteCat(@PathVariable("id") int id){
         catsRepository.deleteById(id);
-        return "del";
     }
 }
