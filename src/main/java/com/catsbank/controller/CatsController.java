@@ -1,6 +1,6 @@
 package com.catsbank.controller;
 
-import com.catsbank.db.dao.CatsRepository;
+import com.catsbank.db.repository.CatsRepository;
 import com.catsbank.db.entities.Cat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

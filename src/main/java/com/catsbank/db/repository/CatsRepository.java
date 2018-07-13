@@ -1,4 +1,4 @@
-package com.catsbank.db.dao;
+package com.catsbank.db.repository;
 
 import com.catsbank.db.entities.Cat;
 import org.springframework.data.repository.CrudRepository;
