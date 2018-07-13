@@ -10,9 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("catsbank")
 public class CatsController {
 
     private final CatsRepository catsRepository;
@@ -28,7 +28,7 @@ public class CatsController {
      * @param photo image Cat
      * @return Object if success else return null
      */
-    @RequestMapping(value = "addCat", method = RequestMethod.POST)
+    @RequestMapping(value = "cat", method = RequestMethod.POST)
     @ResponseBody
     public Cat addCat(@RequestParam String text, @RequestParam(value = "photo", required = false) MultipartFile photo) {
         Cat cat = new Cat();
@@ -54,7 +54,7 @@ public class CatsController {
      * @param photo new image
      * @return Object if success else return null
      */
-    @RequestMapping(value = "updCat", method = RequestMethod.POST)
+    @RequestMapping(value = "updcat", method = RequestMethod.POST)//I do not use "put", because an incomprehensible mistake in retrofit "code=400"
     @ResponseBody
     public Cat updCat(@RequestParam int id, @RequestParam String text, @RequestParam(value = "photo", required = false) MultipartFile photo) {
         Cat cat = catsRepository.findById(id).get();
@@ -72,21 +72,21 @@ public class CatsController {
         return null;
     }
 
-    @RequestMapping(value = "getAllCats", method = RequestMethod.GET)
+    @RequestMapping(value = "cats", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<String> listAllCats() {
+    public ResponseEntity<List<Cat>> listAllCats() {
         List<Cat> list = (List<Cat>) catsRepository.findAll();
-        return new ResponseEntity<String>(String.valueOf(list.stream().map(Cat::toJson).collect(Collectors.toList())), HttpStatus.OK);
+        return new ResponseEntity<List<Cat>>(list, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "getCatById", method = RequestMethod.GET)
+    @RequestMapping(value = "cat/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<String> getCatById(@RequestParam int id) {
+    public ResponseEntity<Cat> getCatById(@RequestParam int id) {
         Cat cat = catsRepository.findById(id).get();
-        return new ResponseEntity<String>(String.valueOf(cat.toJson()), HttpStatus.OK);
+        return new ResponseEntity<Cat>(cat, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "delCatById/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "cat/{id}", method = RequestMethod.DELETE)
     public void deleteCat(@PathVariable("id") int id){
         catsRepository.deleteById(id);
     }
