@@ -1,5 +1,7 @@
 package com.catsbank.services;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -8,6 +10,7 @@ import java.io.*;
 public class ImageService {
 
     private static final String path = "src/main/resources/photo/";
+    private static final Logger Log = LogManager.getLogger(ImageService.class.getName());
 
     /**
      * read byte array from file
@@ -22,6 +25,7 @@ public class ImageService {
         try {
             fileInputStream = new FileInputStream(file);
             fileInputStream.read(bFile);
+            Log.info("get bytes for file-"+name);
             return bFile;
         } catch (IOException e) {
             e.printStackTrace();
@@ -37,6 +41,7 @@ public class ImageService {
     public void saveFileFromByte(byte[] arr, String name){
         try (FileOutputStream fileOutputStream = new FileOutputStream(path+name)) {
             fileOutputStream.write(arr);
+            Log.info("save file name-"+name);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,6 +55,7 @@ public class ImageService {
     public boolean deleteFile(String name){
         try{
             File file = new File(path + name);
+            Log.info("delete file name-"+name);
             return file.delete();
         }catch(Exception e){
             e.printStackTrace();

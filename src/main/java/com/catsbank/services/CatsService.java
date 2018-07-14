@@ -3,6 +3,8 @@ package com.catsbank.services;
 import com.catsbank.db.entities.Cat;
 import com.catsbank.db.repository.CatsRepository;
 import com.catsbank.services.interfaces.ICatsService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +18,7 @@ public class CatsService implements ICatsService {
 
     private final CatsRepository catsRepository;
     private final ImageService imageService;
+    private static final Logger Log = LogManager.getLogger(CatsService.class.getName());
 
     @Autowired
     public CatsService(CatsRepository catsRepository, ImageService imageService) {
@@ -31,9 +34,11 @@ public class CatsService implements ICatsService {
                 cat.setText(text);
                 cat.setPhotoName(photo.getOriginalFilename());
                 imageService.saveFileFromByte(photo.getBytes(),photo.getOriginalFilename());
+                Log.info("add new cat: text-"+text+" photo-"+photo.getOriginalFilename());
                 return catsRepository.save( cat);
             } else {
                 cat.setText(text);
+                Log.info("add new cat: text-"+text);
                 return catsRepository.save(cat);
             }
         } catch (IOException e) {
@@ -56,6 +61,11 @@ public class CatsService implements ICatsService {
                 cat.setPhotoName(photo.getOriginalFilename());
                 imageService.saveFileFromByte(photo.getBytes(),photo.getOriginalFilename());
             }
+            if (photo != null){
+                Log.info("update cat: id-"+id+" text-"+text+" photo-"+photo.getOriginalFilename());
+            }else {
+                Log.info("update cat: id-"+id+" text-"+text);
+            }
             return catsRepository.save(cat);
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,22 +75,26 @@ public class CatsService implements ICatsService {
 
     @Override
     public List<Cat> getAllCats() {
+        Log.info("get all cats");
         return (List<Cat>) catsRepository.findAll();
     }
 
     @Override
     public Cat getCatById(int id) {
+        Log.info("get cat by id-"+id);
         return catsRepository.findById(id).get();
     }
 
     @Override
     public void deleteCatById(int id) {
+        Log.info("delete cat by id-"+id);
         imageService.deleteFile(catsRepository.findById(id).get().getPhotoName());
         catsRepository.deleteById(id);
     }
 
     @Override
     public byte[] getPhoto(String name) {
+        Log.info("get photo-"+name);
         return imageService.getFileByte(name);
     }
 }
