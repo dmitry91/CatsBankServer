@@ -15,15 +15,15 @@ public class Cat implements Serializable {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
     private String text;
-    private byte[] photo;
+    private String photoName;
 
     public Cat() {
     }
 
-    public Cat(int id, String text, byte[] photo) {
+    public Cat(int id, String text, String photoName) {
         this.id = id;
         this.text = text;
-        this.photo = photo;
+        this.photoName = photoName;
     }
 
     public int getId() {
@@ -42,12 +42,12 @@ public class Cat implements Serializable {
         this.text = text;
     }
 
-    public byte[] getPhoto() {
-        return photo;
+    public String getPhotoName() {
+        return photoName;
     }
 
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
+    public void setPhotoName(String photoName) {
+        this.photoName = photoName;
     }
 
     public String toJson() {
@@ -65,7 +65,7 @@ public class Cat implements Serializable {
         return "Cat{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
-                ", photo=" + Arrays.toString(photo) +
+                ", photoName=" + photoName +
                 '}';
     }
 }

@@ -1,11 +1,9 @@
 package com.catsbank.controller;
 
-import com.catsbank.db.repository.CatsRepository;
 import com.catsbank.db.entities.Cat;
 import com.catsbank.services.CatsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,5 +60,14 @@ public class CatsController {
     @RequestMapping(value = "cat/{id}", method = RequestMethod.DELETE)
     public void deleteCat(@PathVariable("id") int id){
         catsService.deleteCatById(id);
+    }
+
+    @RequestMapping(value = "photo/{name}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+    @ResponseBody
+    public ResponseEntity<byte[]> getPhoto(@RequestParam String name){
+        HttpHeaders headers = new HttpHeaders();
+        byte[] media = catsService.getPhoto(name);
+        headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+        return new ResponseEntity<>(media, headers, HttpStatus.OK);
     }
 }

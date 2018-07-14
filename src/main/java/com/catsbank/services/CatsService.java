@@ -9,15 +9,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CatsService implements ICatsService {
 
     private final CatsRepository catsRepository;
+    private final ImageService imageService;
 
     @Autowired
-    public CatsService(CatsRepository catsRepository) {
+    public CatsService(CatsRepository catsRepository, ImageService imageService) {
         this.catsRepository = catsRepository;
+        this.imageService = imageService;
     }
 
     @Override
@@ -26,7 +29,8 @@ public class CatsService implements ICatsService {
         try {
             if (photo != null) {
                 cat.setText(text);
-                cat.setPhoto(photo.getBytes());
+                cat.setPhotoName(photo.getOriginalFilename());
+                imageService.saveFileFromByte(photo.getBytes(),photo.getOriginalFilename());
                 return catsRepository.save( cat);
             } else {
                 cat.setText(text);
@@ -46,7 +50,11 @@ public class CatsService implements ICatsService {
                 cat.setText(text);
             }
             if (photo != null) {
-                cat.setPhoto(photo.getBytes());
+                if(cat.getPhotoName()!=null || !Objects.equals(cat.getPhotoName(), "")){
+                    imageService.deleteFile(cat.getPhotoName());// delete old image in update
+                }
+                cat.setPhotoName(photo.getOriginalFilename());
+                imageService.saveFileFromByte(photo.getBytes(),photo.getOriginalFilename());
             }
             return catsRepository.save(cat);
         } catch (IOException e) {
@@ -67,6 +75,12 @@ public class CatsService implements ICatsService {
 
     @Override
     public void deleteCatById(int id) {
+        imageService.deleteFile(catsRepository.findById(id).get().getPhotoName());
         catsRepository.deleteById(id);
+    }
+
+    @Override
+    public byte[] getPhoto(String name) {
+        return imageService.getFileByte(name);
     }
 }

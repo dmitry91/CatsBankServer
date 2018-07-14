@@ -9,4 +9,5 @@ public interface ICatsService {
     public List<Cat> getAllCats();
     public Cat getCatById(int id);
     public void deleteCatById(int id);
+    public byte[] getPhoto(String name);
 }

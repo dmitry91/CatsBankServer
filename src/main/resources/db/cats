@@ -3,6 +3,6 @@ CREATE TABLE
   `cats` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `text` TEXT NOT NULL,
-  `photo` MEDIUMBLOB NULL,
+  `photo_name` TEXT NULL,
   PRIMARY KEY(`id`)
 )
